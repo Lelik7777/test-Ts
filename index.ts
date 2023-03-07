@@ -442,12 +442,12 @@ const abc2: typeof abc = () => {
     }
 }
 
-//indexed access types
-type PesonAny = {
+//indexed access types - using some types as index of array
+type PersonAny = {
     name: string;
     age: number;
 }
-type Age = PesonAny['age'];
+type Age = PersonAny['age'];
 const ageAny: Age = 34;
 
 //conditional types
@@ -484,4 +484,134 @@ const directionUsed: DirectionObj = {
     right: false,
     up: true,
     down: false,
+}
+
+//utility types
+
+//partial <type> - optional properties - analog ? - we may not use character ? when declare properties
+interface IHome {
+    life: boolean;
+    head: boolean;
+}
+
+const human1: Partial<IHome> = {}
+//required <type> antagonist partial
+const human2: Required<IHome> = {
+    life: true,
+    head: true,
+}
+
+//readonly <type> we can not change values of object
+const human3: Readonly<IHome> = {
+    life: true,
+    head: true,
+}
+//TS2540: Cannot assign to 'life' because it is a read-only property.
+//human3.life=false;
+
+//record <keys,type> first argument ==type of keys and second argument === type of values
+interface IPointData {
+    a: number;
+    b: number;
+}
+
+type PointNames = 'firstPoint' | 'secondPoint';
+const point1: { [key in PointNames]: IPointData } = {
+    firstPoint: {
+        a: 1,
+        b: 2,
+    },
+    secondPoint: {
+        a: 3,
+        b: 4,
+    }
+}
+//the same only using Record: type for keys and type for values
+const point: Record<PointNames, IPointData> = {
+    firstPoint: {
+        a: 1,
+        b: 2,
+    },
+    secondPoint: {
+        a: 3,
+        b: 4,
+    }
+}
+
+//pick <type,keys> - take from the type only what we need
+interface ITodo {
+    title: string;
+    description: string;
+    completed: boolean;
+}
+
+type TodoPreview = Pick<ITodo, 'title' | 'completed'>;
+const todo: TodoPreview = {
+    title: 'world',
+    completed: true,
+}
+
+//omit <type,keys> antagonist  of pick
+const todo2: Omit<ITodo, 'title'> = {
+    completed: true,
+    description: 'programming language',
+}
+
+//exclude <type,exceptions> similar to omit
+type DirectionsNew = 'up' | 'down' | 'left' | 'right';
+type DirectionsWithoutLateral = Exclude<DirectionsNew, 'left' | 'right'>;
+const direct1: DirectionsWithoutLateral = 'up';
+//TS2322: Type '"left"' is not assignable to type 'DirectionsWithoutLateral'.
+//const direct2:DirectionsWithoutLateral='left';
+
+//extract <type,union> antagonist of exclude
+type LateralDirections = Extract<DirectionsNew, 'right' | 'left'>
+const direct3: LateralDirections = 'left';
+//TS2322: Type '"up"' is not assignable to type 'LateralDirections'.
+//const direct:LateralDirections='up';
+
+//nonnullable<type>
+type SomeType = string | null | undefined;
+//in this type exclude null and undefined and remain only string
+type WithoutNullable = NonNullable<SomeType>;
+const valueSome: WithoutNullable = 'hello';
+//error TS2322: Type 'null' is not assignable to type 'string'.
+//const valueSome2:WithoutNullable=null;
+
+//parameters <type>
+const sumNew = (a: number, b: number): number => a + b;
+// get tuple with two elements contains numbers
+type SumParameters = Parameters<typeof sumNew>
+const aa: SumParameters = [3, 4];
+
+//constructor parameters <type>
+
+//returntype <type>
+const transformToObj = (a: number, b: number): { a: number, b: number } => {
+    return {a, b};
+}
+type Transformed = ReturnType<typeof transformToObj>;
+const objTrans: Transformed = {
+    a: 5,
+    b: 4,
+}
+
+//instancetype<type>
+class MyClass {
+    name: string;
+    job: string;
+    age: number;
+
+    constructor(name: string, job: string, age: number) {
+        this.name = name;
+        this.job = job;
+        this.age = age;
+    }
+}
+
+type MyClassAgain = InstanceType<typeof MyClass>
+const objFromMyClass: MyClassAgain = {
+    name: 'bob',
+    job: 'programmer',
+    age: 23,
 }
