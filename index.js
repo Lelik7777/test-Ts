@@ -1,3 +1,18 @@
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 //explicit type indication
 var sum = function (a, b) { return a + b; };
 console.log(sum(4, Number('0')));
@@ -136,5 +151,222 @@ var userSecret = {
     secret: 'cannot be changed'
 };
 userSecret.name = 'tom';
-// error TS2540: Cannot assign to 'secret' because it is a read-only property.
-//userSecret.secret='change'
+var userOptional = {
+    name: 'tom'
+};
+var numericArr = [1, 3, 4];
+var dictionary = {
+    'table': 'стол',
+    'people': 'люди',
+    pages: '1'
+};
+//type assertion
+//angle brackets syntax
+// <div id='my-div>content</div>
+//     <script scr='./app.js></script>
+//app.ts
+//const myDiv = <HTMLElement>document.getElementById('my-div');
+//or may write so
+//const myDiv =document.getElementById('my-div') as HTMLElement;
+// non null assertion syntax -if we are sure it is not null or undefined then use !
+//const myDiv =document.getElementById('my-div')!;
+//classes
+var Person = /** @class */ (function () {
+    function Person(name, age) {
+        if (name === void 0) { name = 'anonymous'; }
+        if (age === void 0) { age = null; }
+        this.name = name;
+        this.age = age;
+    }
+    Person.prototype.sayHi = function () {
+        console.log("hi, ".concat(this.name));
+    };
+    return Person;
+}());
+var person = new Person();
+//person.name = 'tom'
+//person.age = 23;
+console.log(person);
+person.sayHi();
+var person2 = new Person('bob', 44);
+console.log(person2);
+var Person2 = /** @class */ (function () {
+    function Person2(name, age, human) {
+        if (name === void 0) { name = 'tommy'; }
+        if (age === void 0) { age = null; }
+        if (human === void 0) { human = true; }
+        var _this = this;
+        // strangely it works!!!!!!
+        this.sayHiArrow = function () {
+            console.log("hi,".concat(_this.name));
+        };
+        this.name = name;
+        this.age = age;
+        this.human = human;
+    }
+    Person2.prototype.sayHi = function () {
+        console.log("hi, ".concat(this.name));
+    };
+    return Person2;
+}());
+var person3 = new Person2();
+console.log(person3);
+person3.sayHiArrow(); //hi,tommy
+//abstract classes
+var AbstractGreeting = /** @class */ (function () {
+    function AbstractGreeting() {
+    }
+    return AbstractGreeting;
+}());
+var MyGreeting = /** @class */ (function (_super) {
+    __extends(MyGreeting, _super);
+    function MyGreeting() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    MyGreeting.prototype.sayHi = function () {
+        console.log('hi');
+    };
+    return MyGreeting;
+}(AbstractGreeting));
+//Property 'sayHi' in type 'MyGreeting2' is not assignable to the same property in base type 'AbstractGreeting'.   Type '(msg: any) => void' is not assignable to type '() => void'.
+// class MyGreeting2 extends AbstractGreeting{
+//     sayHi(msg) {
+//         console.log(msg);
+//     }
+// }
+//class members visibility : public, protected(available in the child classes),private(only in current class)
+//in child classes can override protected to public
+//all these visibility modifiers exist only in ts and in js do not work
+//generics
+function identity(value) {
+    return value;
+}
+var numericStorage = {
+    value: [],
+    getValue: function () {
+        return this.value;
+    }
+};
+var booleanStorage = {
+    value: [],
+    getValue: function () {
+        return this.value;
+    }
+};
+//generic class
+var IdentifyClass = /** @class */ (function () {
+    function IdentifyClass(value) {
+        this.value = value;
+    }
+    IdentifyClass.prototype.getIdentify = function () {
+        return this.value;
+    };
+    return IdentifyClass;
+}());
+var numericIdentify = new IdentifyClass(5);
+var stringIdentify = new IdentifyClass('hello');
+var myRectangle = {
+    width: 10,
+    height: 10,
+    type: 'box'
+};
+var getValueFromRectProp = function (prop, rectangle) { return rectangle[prop]; };
+console.log(getValueFromRectProp('width', myRectangle));
+console.log(getValueFromRectProp('type', myRectangle));
+//typeof
+function abc() {
+    return {
+        a: 10,
+        b: 'hello'
+    };
+}
+var abc2 = function () {
+    return {
+        a: 2,
+        b: 'world'
+    };
+};
+var ageAny = 34;
+var value = 33;
+var obj22 = {
+    hello: 'hello',
+    test: 123
+};
+var directionUsed = {
+    left: true,
+    right: false,
+    up: true,
+    down: false
+};
+var human1 = {};
+//required <type> antagonist partial
+var human2 = {
+    life: true,
+    head: true
+};
+//readonly <type> we can not change values of object
+var human3 = {
+    life: true,
+    head: true
+};
+var point1 = {
+    firstPoint: {
+        a: 1,
+        b: 2
+    },
+    secondPoint: {
+        a: 3,
+        b: 4
+    }
+};
+//the same only using Record: type for keys and type for values
+var point = {
+    firstPoint: {
+        a: 1,
+        b: 2
+    },
+    secondPoint: {
+        a: 3,
+        b: 4
+    }
+};
+var todo = {
+    title: 'world',
+    completed: true
+};
+//omit <type,keys> antagonist  of pick
+var todo2 = {
+    completed: true,
+    description: 'programming language'
+};
+var direct1 = 'up';
+var direct3 = 'left';
+var valueSome = 'hello';
+//error TS2322: Type 'null' is not assignable to type 'string'.
+//const valueSome2:WithoutNullable=null;
+//parameters <type>
+var sumNew = function (a, b) { return a + b; };
+var aa = [3, 4];
+//constructor parameters <type>
+//returntype <type>
+var transformToObj = function (a, b) {
+    return { a: a, b: b };
+};
+var objTrans = {
+    a: 5,
+    b: 4
+};
+//instancetype<type>
+var MyClass = /** @class */ (function () {
+    function MyClass(name, job, age) {
+        this.name = name;
+        this.job = job;
+        this.age = age;
+    }
+    return MyClass;
+}());
+var objFromMyClass = {
+    name: 'bob',
+    job: 'programmer',
+    age: 23
+};
